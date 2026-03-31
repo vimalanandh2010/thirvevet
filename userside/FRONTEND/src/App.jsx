@@ -20,6 +20,8 @@ import Signup from './Signup';
 import Login from './Login';
 import Logo from './Logo';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 function App() {
   const [scrolled, setScrolled] = useState(false);
   const [currentPage, setCurrentPage] = useState('home'); // 'home', 'signup', 'login', 'products'
@@ -66,7 +68,7 @@ function App() {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/products');
+      const response = await fetch(`${API_URL}/api/products`);
       const data = await response.json();
       if (response.ok) {
         setProducts(data);
@@ -143,13 +145,13 @@ function App() {
 
   const fetchUserActions = async (token) => {
     try {
-      const savedRes = await fetch('http://localhost:5000/api/user/saved', {
+      const savedRes = await fetch(`${API_URL}/api/user/saved`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const savedData = await savedRes.json();
       if (savedRes.ok) setSavedProducts(savedData);
 
-      const boughtRes = await fetch('http://localhost:5000/api/user/bought', {
+      const boughtRes = await fetch(`${API_URL}/api/user/bought`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const boughtData = await boughtRes.json();
@@ -167,7 +169,7 @@ function App() {
 
     try {
       const token = localStorage.getItem('thrivevet_token');
-      const response = await fetch('http://localhost:5000/api/user/save', {
+      const response = await fetch(`${API_URL}/api/user/save`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -206,7 +208,7 @@ function App() {
 
     try {
       const token = localStorage.getItem('thrivevet_token');
-      const response = await fetch('http://localhost:5000/api/user/buy', {
+      const response = await fetch(`${API_URL}/api/user/buy`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -224,7 +226,7 @@ function App() {
         setOrderSuccess(true);
         setShowPaymentModal(false);
         setTransactionId('');
-        const boughtRes = await fetch('http://localhost:5000/api/user/bought', {
+        const boughtRes = await fetch(`${API_URL}/api/user/bought`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const boughtData = await boughtRes.json();

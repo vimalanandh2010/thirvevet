@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { ArrowRight, User, Phone, Mail, MapPin, Lock, Eye, EyeOff } from './Icons';
 import Logo from './Logo';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 function Signup({ onBack, onLogin, onAuthSuccess }) {
   const [formData, setFormData] = useState({
     name: '',
@@ -27,7 +29,7 @@ function Signup({ onBack, onLogin, onAuthSuccess }) {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/signup', {
+      const response = await fetch(`${API_URL}/api/auth/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

@@ -24,6 +24,8 @@ import ProductChart from './ProductChart';
 import { supabase } from './supabaseClient';
 import './index.css';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+
 function App() {
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
   const [currentPage, setCurrentPage] = useState('home'); // 'home', 'dashboard', 'login', 'signup', 'products', 'orders', 'users'
@@ -105,7 +107,7 @@ function App() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('http://localhost:5001/api/admin/users', {
+      const response = await fetch(`${API_URL}/api/admin/users`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('thrivevet_admin_token')}`
         }
@@ -119,7 +121,7 @@ function App() {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch('http://localhost:5001/api/admin/products', {
+      const response = await fetch(`${API_URL}/api/admin/products`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('thrivevet_admin_token')}`
         }
@@ -133,7 +135,7 @@ function App() {
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch('http://localhost:5001/api/admin/orders', {
+      const response = await fetch(`${API_URL}/api/admin/orders`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('thrivevet_admin_token')}`
         }
@@ -149,7 +151,7 @@ function App() {
     e.preventDefault();
     setError('');
     try {
-      const response = await fetch('http://localhost:5001/api/admin/login', {
+      const response = await fetch(`${API_URL}/api/admin/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(loginData)
@@ -321,7 +323,7 @@ function App() {
       console.log('Generated Public URL:', publicUrl);
 
       // 3. Send to Backend (Product metadata + image URL)
-      const response = await fetch('http://localhost:5001/api/admin/products', {
+      const response = await fetch(`${API_URL}/api/admin/products`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

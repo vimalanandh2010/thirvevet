@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { User, Mail, Lock, Phone, MapPin, Eye, EyeOff } from './Icons';
 import './index.css';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+
 function Signup({ onBack, onLogin, onAuthSuccess }) {
   const [formData, setFormData] = useState({
     name: '',
@@ -27,7 +29,7 @@ function Signup({ onBack, onLogin, onAuthSuccess }) {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5001/api/admin/signup', {
+      const response = await fetch(`${API_URL}/api/admin/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

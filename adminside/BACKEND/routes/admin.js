@@ -130,7 +130,6 @@ router.get('/orders', async (req, res) => {
       'boughtProducts.0': { $exists: true } 
     }).populate('boughtProducts.product').select('name email phone location boughtProducts');
 
-    // Flatten the orders to make it easier for the frontend
     const allOrders = [];
     usersWithOrders.forEach(user => {
       user.boughtProducts.forEach(order => {
