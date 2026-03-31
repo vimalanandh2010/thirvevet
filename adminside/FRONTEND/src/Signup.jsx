@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { User, Mail, Lock, Phone, MapPin, Eye, EyeOff } from './Icons';
 import './index.css';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+const API_URL = import.meta.env.VITE_API_URL || 'https://thirvevet-1.onrender.com';
 
 function Signup({ onBack, onLogin, onAuthSuccess }) {
   const [formData, setFormData] = useState({
