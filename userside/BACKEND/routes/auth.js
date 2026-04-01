@@ -50,8 +50,8 @@ router.post('/signup', async (req, res) => {
       user: { id: newUser._id, email: newUser.email, name: newUser.name } 
     });
   } catch (error) {
-    console.error('Signup Error:', error.message);
-    res.status(500).json({ message: 'Server error during signup.' });
+    console.error('Signup Error:', error);
+    res.status(500).json({ message: 'Server error during signup.', details: error.message });
   }
 });
 

@@ -20,7 +20,7 @@ import Signup from './Signup';
 import Login from './Login';
 import Logo from './Logo';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://thirvevet.onrender.com';
+const API_URL = import.meta.env.VITE_API_URL || 'https://thirvevet-1.onrender.com';
 
 function App() {
   const [scrolled, setScrolled] = useState(false);

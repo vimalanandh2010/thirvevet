@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
     res.json(products);
   } catch (error) {
     console.error('Fetch products error:', error.message);
-    res.status(500).send('Server Error');
+    res.status(500).json({ msg: 'Server Error' });
   }
 });
 

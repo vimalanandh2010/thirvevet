@@ -41,7 +41,7 @@ router.post('/signup', async (req, res) => {
     });
   } catch (error) {
     console.error('Admin Signup Error:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Server error', details: error.message });
   }
 });
 
