@@ -24,7 +24,7 @@ import ProductChart from './ProductChart';
 import { supabase } from './supabaseClient';
 import './index.css';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://thirvevet-1.onrender.com';
+const API_URL = import.meta.env.VITE_API_URL || 'https://thirvevet.onrender.com';
 
 function App() {
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
