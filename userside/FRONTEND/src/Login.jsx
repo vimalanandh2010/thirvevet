@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowRight, Mail, Lock, Eye, EyeOff } from './Icons';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://thirvevet.onrender.com';
+const API_URL = import.meta.env.VITE_API_URL || 'https://thirvevet-userside-backend.onrender.com';
 
 function Login({ onBack, onSignUp, onAuthSuccess }) {
   const [formData, setFormData] = useState({

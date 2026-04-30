@@ -20,7 +20,7 @@ import Signup from './Signup';
 import Login from './Login';
 import Logo from './Logo';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://thirvevet.onrender.com';
+const API_URL = import.meta.env.VITE_API_URL || 'https://thirvevet-userside-backend.onrender.com';
 
 function App() {
   const [scrolled, setScrolled] = useState(false);
@@ -39,13 +39,29 @@ function App() {
   const [transactionId, setTransactionId] = useState('');
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
+  // Helper: handle 401 by logging user out
+  const handleUnauthorized = () => {
+    localStorage.removeItem('thrivevet_token');
+    localStorage.removeItem('thrivevet_user');
+    setUser(null);
+    setSavedProducts([]);
+    setBoughtProducts([]);
+    setCurrentPage('login');
+  };
+
   useEffect(() => {
     // Check if user is logged in
     const storedUser = localStorage.getItem('thrivevet_user');
     const token = localStorage.getItem('thrivevet_token');
     if (storedUser && token) {
-      setUser(JSON.parse(storedUser));
-      fetchUserActions(token);
+      try {
+        setUser(JSON.parse(storedUser));
+        fetchUserActions(token);
+      } catch (e) {
+        // Corrupted stored user data — clear it
+        localStorage.removeItem('thrivevet_token');
+        localStorage.removeItem('thrivevet_user');
+      }
     }
 
     fetchProducts();
@@ -148,12 +164,20 @@ function App() {
       const savedRes = await fetch(`${API_URL}/api/user/saved`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
+      if (savedRes.status === 401) {
+        handleUnauthorized();
+        return;
+      }
       const savedData = await savedRes.json();
       if (savedRes.ok) setSavedProducts(savedData);
 
       const boughtRes = await fetch(`${API_URL}/api/user/bought`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
+      if (boughtRes.status === 401) {
+        handleUnauthorized();
+        return;
+      }
       const boughtData = await boughtRes.json();
       if (boughtRes.ok) setBoughtProducts(boughtData);
     } catch (err) {
@@ -177,6 +201,11 @@ function App() {
         },
         body: JSON.stringify({ productId })
       });
+
+      if (response.status === 401) {
+        handleUnauthorized();
+        return;
+      }
       
       const data = await response.json();
       if (response.ok) {
@@ -222,6 +251,12 @@ function App() {
         })
       });
 
+      if (response.status === 401) {
+        handleUnauthorized();
+        alert('Session expired. Please log in again.');
+        return;
+      }
+
       if (response.ok) {
         setOrderSuccess(true);
         setShowPaymentModal(false);
@@ -229,8 +264,10 @@ function App() {
         const boughtRes = await fetch(`${API_URL}/api/user/bought`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
-        const boughtData = await boughtRes.json();
-        if (boughtRes.ok) setBoughtProducts(boughtData);
+        if (boughtRes.ok) {
+          const boughtData = await boughtRes.json();
+          setBoughtProducts(boughtData);
+        }
         
         // Update local products stock
         const updatedProducts = products.map(p => {
@@ -531,8 +568,10 @@ function App() {
       <Signup 
         onBack={() => setCurrentPage('home')} 
         onLogin={() => setCurrentPage('login')} 
-        onAuthSuccess={(user) => {
-          setUser(user);
+        onAuthSuccess={(userData) => {
+          setUser(userData);
+          const token = localStorage.getItem('thrivevet_token');
+          if (token) fetchUserActions(token);
           setCurrentPage('home');
         }}
       />
@@ -544,8 +583,10 @@ function App() {
       <Login 
         onBack={() => setCurrentPage('home')} 
         onSignUp={() => setCurrentPage('signup')} 
-        onAuthSuccess={(user) => {
-          setUser(user);
+        onAuthSuccess={(userData) => {
+          setUser(userData);
+          const token = localStorage.getItem('thrivevet_token');
+          if (token) fetchUserActions(token);
           setCurrentPage('home');
         }}
       />
