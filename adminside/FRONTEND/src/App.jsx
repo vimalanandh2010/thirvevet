@@ -21,7 +21,7 @@ import {
 } from './Icons';
 import Signup from './Signup';
 import ProductChart from './ProductChart';
-import { supabase } from './supabaseClient';
+import { supabase, supabaseConfigError } from './supabaseClient';
 import './index.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://thirvevet.onrender.com';
@@ -53,6 +53,10 @@ function App() {
   useEffect(() => {
     const testSupabase = async () => {
       console.log('--- Supabase Connection Diagnostics ---');
+      if (supabaseConfigError || !supabase) {
+        console.error(`❌ ${supabaseConfigError}`);
+        return;
+      }
       try {
         const { data: buckets, error: bucketError } = await supabase.storage.listBuckets();
         if (bucketError) {
@@ -281,6 +285,10 @@ function App() {
 
   const handleUploadProduct = async (e) => {
     e.preventDefault();
+    if (supabaseConfigError || !supabase) {
+      alert(supabaseConfigError || 'Supabase is not configured.');
+      return;
+    }
     if (!productImage) {
       alert('Please select an image first');
       return;
