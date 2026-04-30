@@ -5,14 +5,26 @@ const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const allowedOrigins = [
+  'https://userside-frontend.onrender.com',
+  'http://localhost:5173',
+  'http://localhost:3000'
+];
 
 // Middleware
 app.use(express.json());
 app.use(cors({
-  origin: '*', // Allows all origins during production; can be restricted later for security
+  origin: (origin, callback) => {
+    // Allow server-to-server/health probes with no origin header
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error('CORS blocked for this origin'));
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 204
 }));
+app.options('*', cors());
 
 // Database Connection
 const mongoURI = process.env.MONGODB_URI;
@@ -35,6 +47,10 @@ app.use('/api/user', userRoutes);
 // Initial Test Route
 app.get('/', (req, res) => {
   res.send('ThriveVet Backend Server is running...');
+});
+
+app.get('/health', (req, res) => {
+  res.status(200).json({ ok: true, service: 'thrivevet-backend' });
 });
 
 // Start Server
