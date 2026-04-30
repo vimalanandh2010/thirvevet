@@ -39,7 +39,7 @@ router.post('/signup', async (req, res) => {
     // Create JWT token
     const token = jwt.sign(
       { id: newUser._id }, 
-      process.env.JWT_SECRET || 'your_super_secret_key_for_thrivevet_12345', 
+      process.env.JWT_SECRET, 
       { expiresIn: '7d' }
     );
 
@@ -78,7 +78,7 @@ router.post('/login', async (req, res) => {
     // Create JWT token
     const token = jwt.sign(
       { id: user._id }, 
-      process.env.JWT_SECRET || 'your_super_secret_key_for_thrivevet_12345', 
+      process.env.JWT_SECRET, 
       { expiresIn: '7d' }
     );
 

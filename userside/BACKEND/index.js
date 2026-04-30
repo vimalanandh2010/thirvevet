@@ -5,11 +5,18 @@ const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const allowedOrigins = [
-  'https://userside-frontend.onrender.com',
-  'http://localhost:5173',
-  'http://localhost:3000'
-];
+const requiredEnv = ['MONGODB_URI', 'JWT_SECRET'];
+const missingEnv = requiredEnv.filter((key) => !process.env[key]);
+
+if (missingEnv.length) {
+  console.error(`Missing required environment variables: ${missingEnv.join(', ')}`);
+  process.exit(1);
+}
+
+const allowedOrigins = (process.env.CORS_ORIGINS || '')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
 // Middleware
 app.use(express.json());
@@ -17,7 +24,7 @@ app.use(cors({
   origin: (origin, callback) => {
     // Allow server-to-server/health probes with no origin header
     if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
+    if (allowedOrigins.length === 0 || allowedOrigins.includes(origin)) return callback(null, true);
     return callback(new Error('CORS blocked for this origin'));
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
